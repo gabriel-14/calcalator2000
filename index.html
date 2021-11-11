@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fully functioning Calculator</title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+        }
+        
+        body {
+            box-sizing: border-box;
+        }
+        
+        main {
+            display: block;
+            width: 450px;
+            height: 600px;
+            margin: auto;
+            border: 3px solid gray;
+            border-radius: 5px;
+            background-color: gray;
+        }
+        
+        .lcd {
+            margin: 20px;
+            border: 2px solid black;
+            border-radius: 5px;
+            padding: 3px;
+            background-color: ivory;
+        }
+        
+        .inputLog {
+            font-family: 'Agency FB', 'Gill Sans MT', Helvetica, sans-serif;
+            text-align: end;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+            height: 20px;
+            margin-bottom: 8px;
+        }
+        
+        .textbox {
+            width: 100%;
+            border: none;
+            background-color: inherit;
+            font-size: 3em;
+            text-align: end;
+            cursor: default;
+        }
+        
+        .textbox::placeholder {
+            color: black
+        }
+        
+        .buttons {
+            margin: 8px 20px 20px 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 5px;
+            height: 80%;
+            width: 90%;
+        }
+        
+        .calc-btn {
+            font-family: 'Gill Sans MT', Verdana, Tahoma, sans-serif;
+            font-weight: bolder;
+            font-size: 2em;
+            cursor: pointer;
+        }
+        
+        .back-button {
+            grid-row: 1;
+            grid-column: 1;
+        }
+        
+        .divide-button {
+            grid-row: 1;
+            grid-column: 2;
+        }
+        
+        .multiply-button {
+            grid-row: 1;
+            grid-column: 3;
+        }
+        
+        .subtract-button {
+            grid-row: 1;
+            grid-column: 4;
+        }
+        
+        .add-button {
+            grid-row: 2/4;
+            grid-column: 4;
+        }
+        
+        .equals-button {
+            grid-row: 4/6;
+            grid-column: 4;
+        }
+        
+        .decimal-button {
+            grid-row: 5;
+            grid-column: 2;
+        }
+        
+        .clear-button {
+            grid-row: 5;
+            grid-column: 3;
+        }
+        
+        .num-1 {
+            grid-row: 4;
+            grid-column: 1;
+        }
+        
+        .num-2 {
+            grid-row: 4;
+            grid-column: 2;
+        }
+        
+        .num-3 {
+            grid-row: 4;
+            grid-column: 3;
+        }
+        
+        .num-4 {
+            grid-row: 3;
+            grid-column: 1;
+        }
+        
+        .num-5 {
+            grid-row: 3;
+            grid-column: 2;
+        }
+        
+        .num-6 {
+            grid-row: 3;
+            grid-column: 3;
+        }
+        
+        .num-7 {
+            grid-row: 2;
+            grid-column: 1;
+        }
+        
+        .num-8 {
+            grid-row: 2;
+            grid-column: 2;
+        }
+        
+        .num-9 {
+            grid-row: 2;
+            grid-column: 3;
+        }
+        
+        .num-0 {
+            grid-row: 5;
+            grid-column: 1;
+        }
+        
+        .title {
+            grid-row: 6;
+            grid-column: 1/ span 4;
+            font-family: 'Gill Sans MT', Verdana, Tahoma, sans-serif;
+            font-size: 3em;
+            text-align: center;
+            color: #efefef;
+        }
+        
+        @media screen and (max-width: 450px) {
+            main {
+                width: 100%;
+            }
+        }
+        
+        @media screen and (max-height:600px) {
+            main {
+                height: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="lcd">
+            <div id="inputLog" class="inputLog">
+            </div>
+            <input type="text" class="textbox" id="curInput" placeholder="0" readonly>
+        </div>
+        <div class="buttons">
+            <h1 class="title">Calcalator 2000</h1>
+            <input type="button" class="calc-btn back-button" onclick="back();logLastKey(this)" id="back" value="&lt;&lt;">
+            <input type="button" class="calc-btn divide-button" onclick="operation(this);logLastKey(this);logLastOperation(this)" id="/" value="÷">
+            <input type="button" class="calc-btn multiply-button" onclick="operation(this);logLastKey(this);logLastOperation(this)" id="*" value="x">
+            <input type="button" class="calc-btn subtract-button" onclick="operation(this);logLastKey(this);logLastOperation(this)" id="-" value="-">
+
+            <input type="button" class="calc-btn num-7" onclick="numberInput(this);logLastKey(this)" id="7" value="7">
+            <input type="button" class="calc-btn num-8" onclick="numberInput(this);logLastKey(this)" id="8" value="8">
+            <input type="button" class="calc-btn num-9" onclick="numberInput(this);logLastKey(this)" id="9" value="9">
+            <input type="button" class="calc-btn add-button" onclick="operation(this);logLastKey(this);logLastOperation(this)" id="+" value="+">
+
+            <input type="button" class="calc-btn num-4" onclick="numberInput(this);logLastKey(this)" id="4" value="4">
+            <input type="button" class="calc-btn num-5" onclick="numberInput(this);logLastKey(this)" id="5" value="5">
+            <input type="button" class="calc-btn num-6" onclick="numberInput(this);logLastKey(this)" id="6" value="6">
+
+            <input type="button" class="calc-btn num-1" onclick="numberInput(this);logLastKey(this)" id="1" value="1">
+            <input type="button" class="calc-btn num-2" onclick="numberInput(this);logLastKey(this)" id="2" value="2">
+            <input type="button" class="calc-btn num-3" onclick="numberInput(this);logLastKey(this)" id="3" value="3">
+            <input type="button" class="calc-btn equals-button" onclick="equals();logLastKey(this);logLastOperation(this)" id="equal" value="=">
+
+            <input type="button" class="calc-btn num-0" onclick="numberInput(this);logLastKey(this)" id="0" value="0">
+            <input type="button" class="calc-btn decimal-button" onclick="decimal();logLastKey(this)" id="decimal" value=".">
+            <input type="button" class="calc-btn clear-button" onclick="clearCalc()" id="clear" value="C">
+        </div>
+    </main>
+    <script>
+        let decimalUsed = false
+        let mem = undefined
+        let textLog
+        let lastKey
+        let lastOperation
+
+        const logLastKey = tar => lastKey = tar.value
+        const logLastOperation = tar => lastOperation = tar.value
+
+        const willClear = () => {
+            if (lastOperation === '=') {
+                clearCalc();
+            }
+        }
+
+        const checkDecimal = () => {
+            document.getElementById('curInput').value.includes('.') ? decimalUsed = true : decimalUsed = false
+        }
+
+        const numberInput = tar => {
+            willClear();
+            document.getElementById('curInput').value += tar.id
+            checkDecimal()
+        }
+
+        const appendTextLog = (curInput, operation) => {
+            if (textLog === undefined) {
+                textLog = `${curInput} ${operation}`
+            } else {
+                if (Number.isNaN(Number(lastKey))) {
+                    textLog = textLog.slice(0, textLog.length - 1)
+                }
+                switch (operation) {
+                    case '+':
+                    case '-':
+                    case '=':
+                        textLog = `${textLog.trim()} ${curInput.trim()} ${operation}`
+                        break
+
+                    case 'x':
+                    case '÷':
+                        if ((lastKey == 'x') || (lastKey == '÷')) {
+                            textLog = textLog = `${textLog.trim()} ${curInput.trim()} ${operation}`
+                        } else {
+                            textLog = `(${textLog.trim()} ${curInput.trim()}) ${operation}`
+                        }
+                        break
+                    default:
+                        alert("You encountered an error.")
+                }
+            }
+            document.getElementById('inputLog').innerHTML = textLog
+        }
+
+        const back = () => {
+            willClear();
+            curInput = document.getElementById('curInput')
+            curInput.value = curInput.value.substr(0, curInput.value.length - 1)
+            checkDecimal()
+        }
+
+        const equals = () => {
+            let lastNum = Number(document.getElementById('curInput').value)
+            if (lastOperation !== '=') {
+                appendTextLog(document.getElementById('curInput').value, '=')
+            }
+            switch (lastOperation) {
+                case '+':
+                    mem += lastNum
+                    break
+                case '-':
+                    mem -= lastNum
+                    break
+                case 'x':
+                    mem *= lastNum
+                    break
+                case '÷':
+                    mem /= lastNum
+                    break
+                case '=':
+                    break
+                case undefined:
+                    mem = lastNum
+            }
+            document.getElementById('curInput').value = ''
+            document.getElementById('curInput').placeholder = mem
+        }
+
+        const completePendingCalc = () => {
+            let num1 = Number(document.getElementById('curInput').value)
+            if ((num1 != 0) && (mem != 0)) {
+                console.log('Completed Pending Calculations')
+                equals();
+                console.log(`mem after completed pending calculations ${mem}`)
+                textLog = textLog.slice(0, textLog.length - 1)
+            }
+        }
+
+        const clearCalc = () => {
+            decimalUsed = false
+            mem = undefined
+            textLog = undefined
+            lastKey = undefined
+            lastOperation = undefined
+            document.getElementById('curInput').value = ''
+            document.getElementById('curInput').placeholder = 0
+            document.getElementById('inputLog').innerHTML = ''
+        }
+
+        const operation = operator => {
+            if ((mem === undefined) || (mem === 0)) mem = Number(document.getElementById('curInput').value)
+            console.log(mem)
+            if ((textLog === undefined) && ((mem === undefined) || (mem === 0))) {
+                return
+            }
+            if (textLog !== undefined) {
+                completePendingCalc()
+            }
+            appendTextLog(document.getElementById('curInput').value, operator.value)
+            document.getElementById('curInput').value = ''
+            document.getElementById('curInput').placeholder = mem
+        }
+
+        const decimal = () => {
+            willClear();
+            if (!decimalUsed) {
+                document.getElementById('curInput').value += '.'
+                decimalUsed = true
+            }
+        }
+    </script>
+</body>
+
+</html>
